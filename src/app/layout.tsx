@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "react-calendar/dist/Calendar.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lama Dev School Management Dashboard",
+  title: "School Management Dashboard",
   description: "Next.js School Management System",
 };
 

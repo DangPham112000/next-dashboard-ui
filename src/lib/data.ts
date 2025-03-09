@@ -1057,7 +1057,7 @@ export const calendarEvents = [
   {
     title: "History",
     allDay: false,
-    start: new Date(2025, 2, 7, 14, 0),
-    end: new Date(2025, 2, 7, 14, 45),
+    start: new Date(2025, 2, 10, 14, 0),
+    end: new Date(2025, 2, 10, 14, 45),
   },
 ];

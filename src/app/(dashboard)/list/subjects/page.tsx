@@ -44,7 +44,7 @@ export default function SubjectListPage() {
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>
             <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/view.png" alt="view" width={16} height={16} />
+              <Image src="/edit.png" alt="view" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (

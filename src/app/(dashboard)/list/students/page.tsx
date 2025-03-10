@@ -93,7 +93,7 @@ export default function StudentListPage() {
     <div className="flex-1 rounded-md bg-white mt-0 m-4 p-4">
       {/* Top */}
       <div className="flex items-center justify-between">
-        <h1 className="md:block hidden text-lg font-semibold">All teachers</h1>
+        <h1 className="md:block hidden text-lg font-semibold">All students</h1>
         <div className="flex md:flex-row flex-col items-center gap-4 md:w-auto w-full">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">

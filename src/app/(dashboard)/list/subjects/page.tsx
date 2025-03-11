@@ -1,3 +1,4 @@
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -39,18 +40,14 @@ export default function SubjectListPage() {
           <h3 className="font-semibold">{item.name}</h3>
         </div>
       </td>
-      <td className="md:table-cell hidden">{item.teachers.join(',')}</td>
+      <td className="md:table-cell hidden">{item.teachers.join(",")}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/edit.png" alt="view" width={16} height={16} />
-            </button>
-          </Link>
           {role === "admin" && (
-            <button className="flex items-center justify-center rounded-full bg-stPurple w-7 h-7">
-              <Image src="/delete.png" alt="view" width={16} height={16} />
-            </button>
+            <>
+              <FormModal table="subject" type="update" data={item} />
+              <FormModal table="subject" type="delete" id={item.id} />
+            </>
           )}
         </div>
       </td>
@@ -71,11 +68,7 @@ export default function SubjectListPage() {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
-            )}
+            {role === "admin" && <FormModal table="subject" type="create" />}
           </div>
         </div>
       </div>

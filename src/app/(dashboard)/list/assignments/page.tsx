@@ -1,3 +1,4 @@
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -57,13 +58,11 @@ export default function AssignmentListPage() {
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>
             <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/edit.png" alt="view" width={16} height={16} />
+              <Image src="/view.png" alt="view" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
-            <button className="flex items-center justify-center rounded-full bg-stPurple w-7 h-7">
-              <Image src="/delete.png" alt="view" width={16} height={16} />
-            </button>
+            <FormModal table="assignment" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -74,7 +73,9 @@ export default function AssignmentListPage() {
     <div className="flex-1 rounded-md bg-white mt-0 m-4 p-4">
       {/* Top */}
       <div className="flex items-center justify-between">
-        <h1 className="md:block hidden text-lg font-semibold">All assignments</h1>
+        <h1 className="md:block hidden text-lg font-semibold">
+          All assignments
+        </h1>
         <div className="flex md:flex-row flex-col items-center gap-4 md:w-auto w-full">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
@@ -84,11 +85,7 @@ export default function AssignmentListPage() {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
-            )}
+            {role === "admin" && <FormModal table="assignment" type="create" />}
           </div>
         </div>
       </div>

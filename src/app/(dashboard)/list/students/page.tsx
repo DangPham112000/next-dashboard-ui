@@ -1,3 +1,4 @@
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -74,15 +75,13 @@ export default function StudentListPage() {
       <td className="lg:table-cell hidden">{item.address}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
+          <Link href={`/list/students/${item.id}`}>
             <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
               <Image src="/view.png" alt="view" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
-            <button className="flex items-center justify-center rounded-full bg-stPurple w-7 h-7">
-              <Image src="/delete.png" alt="view" width={16} height={16} />
-            </button>
+            <FormModal table="student" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -103,11 +102,7 @@ export default function StudentListPage() {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
-            )}
+            {role === "admin" && <FormModal table="student" type="create" />}
           </div>
         </div>
       </div>

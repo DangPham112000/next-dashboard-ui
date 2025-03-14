@@ -83,7 +83,7 @@ const renderRow = (item: TeacherList) => (
           </button>
         </Link>
         {role === "admin" && (
-          <FormModal table="teacher" type="delete" id={+item.id} />
+          <FormModal table="teacher" type="delete" id={item.id} />
         )}
       </div>
     </td>
@@ -108,6 +108,14 @@ export default async function TeacherListPage({
             classId: parseInt(value!),
           },
         };
+        break;
+      }
+      case "search": {
+        queryDb.name = {
+          contains: value,
+          mode: "insensitive",
+        };
+        break;
       }
     }
   }

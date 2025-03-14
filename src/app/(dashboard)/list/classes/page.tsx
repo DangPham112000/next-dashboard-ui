@@ -2,18 +2,15 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { classesData, role } from "@/lib/data";
+import { role } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Class, Grade, Prisma, Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-type Class = {
-  id: number;
-  name: string;
-  capacity: number;
-  grade: number;
-  supervisor: string;
-};
+type ClassList = Class & { grade: Grade } & { supervisor: Teacher };
 
 const columns = [
   {
@@ -41,34 +38,74 @@ const columns = [
   },
 ];
 
-export default function ClassListPage() {
-  const renderRow = (item: Class) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-stPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{item.name}</h3>
-        </div>
-      </td>
-      <td className="md:table-cell hidden">{item.capacity}</td>
-      <td className="md:table-cell hidden">{item.grade}</td>
-      <td className="md:table-cell hidden">{item.supervisor}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/view.png" alt="view" width={16} height={16} />
-            </button>
-          </Link>
-          {role === "admin" && (
-            <FormModal table="class" type="delete" id={item.id} />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+const renderRow = (item: ClassList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-stPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4">
+      <div className="flex flex-col">
+        <h3 className="font-semibold">{item.name}</h3>
+      </div>
+    </td>
+    <td className="md:table-cell hidden">{item.capacity}</td>
+    <td className="md:table-cell hidden">{item.grade.level}</td>
+    <td className="md:table-cell hidden">
+      {item.supervisor.name + " " + item.supervisor.surname}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        <Link href={`/list/teachers/${item.id}`}>
+          <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
+            <Image src="/view.png" alt="view" width={16} height={16} />
+          </button>
+        </Link>
+        {role === "admin" && (
+          <FormModal table="class" type="delete" id={item.id} />
+        )}
+      </div>
+    </td>
+  </tr>
+);
+
+export default async function ClassListPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const { page = 1, ...queryParams } = searchParams;
+  const pageNum = +page;
+
+  const queryDb: Prisma.ClassWhereInput = {};
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (!value) continue;
+    switch (key) {
+      case "search": {
+        queryDb.name = {
+          contains: value,
+          mode: "insensitive",
+        };
+        break;
+      }
+      case "supervisorId": {
+        queryDb.supervisorId = value;
+        break;
+      }
+    }
+  }
+
+  const [classesData, length] = await prisma.$transaction([
+    prisma.class.findMany({
+      where: queryDb,
+      include: {
+        supervisor: { select: { name: true, surname: true } },
+        grade: { select: { level: true } },
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (pageNum - 1),
+    }),
+    prisma.class.count({ where: queryDb }),
+  ]);
 
   return (
     <div className="flex-1 rounded-md bg-white mt-0 m-4 p-4">
@@ -91,7 +128,7 @@ export default function ClassListPage() {
       {/* List */}
       <Table columns={columns} renderRow={renderRow} data={classesData} />
       {/* Pagination */}
-      <Pagination />
+      <Pagination page={pageNum} count={length} />
     </div>
   );
 }

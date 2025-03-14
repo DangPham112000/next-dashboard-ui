@@ -11,13 +11,6 @@ Docker run (should match username and password with your `.env`):
 docker run -d --name postgres-school-db -p 5432:5432 -e POSTGRES_DB=school -e POSTGRES_USER=[your db username] -e POSTGRES_PASSWORD=[your db password] postgres:latest
 ```
 
-### Visual editor for postgres database
-Should run in the location that has `.env` and `prisma/schema.prisma`
-```sh
-npx prisma studio
-```
-Open [http://localhost:5555](http://localhost:5555) with your browser
-
 ### Migrate schema to DB
 To map your data model to the database schema, you need to use the prisma migrate CLI commands:
 ```sh
@@ -31,6 +24,15 @@ This command does two things:
 ```sh
 npx prisma db seed
 ```
+
+## Tool
+
+### Visual editor for postgres database
+Should run in the location that has `.env` and `prisma/schema.prisma`
+```sh
+npx prisma studio
+```
+Open [http://localhost:5555](http://localhost:5555) with your browser
 
 ## Getting Started
 

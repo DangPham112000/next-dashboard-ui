@@ -2,19 +2,15 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { eventsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-type Event = {
-  id: number;
-  title: string;
-  class: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-};
+type EventList = Event & { class: Class };
 
 const columns = [
   {
@@ -47,35 +43,79 @@ const columns = [
   },
 ];
 
-export default function EventListPage() {
-  const renderRow = (item: Event) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-stPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{item.title}</h3>
-        </div>
-      </td>
-      <td>{item.class}</td>
-      <td className="md:table-cell hidden">{item.date}</td>
-      <td className="md:table-cell hidden">{item.startTime}</td>
-      <td className="md:table-cell hidden">{item.endTime}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/view.png" alt="view" width={16} height={16} />
-            </button>
-          </Link>
-          {role === "admin" && (
-            <FormModal table="event" type="delete" id={item.id} />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+const renderRow = (item: EventList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-stPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4">
+      <div className="flex flex-col">
+        <h3 className="font-semibold">{item.title}</h3>
+      </div>
+    </td>
+    <td>{item.class.name}</td>
+    <td className="md:table-cell hidden">
+      {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+    </td>
+    <td className="md:table-cell hidden">
+      {item.startTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })}
+    </td>
+    <td className="md:table-cell hidden">
+      {item.endTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        <Link href={`/list/teachers/${item.id}`}>
+          <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
+            <Image src="/view.png" alt="view" width={16} height={16} />
+          </button>
+        </Link>
+        {role === "admin" && (
+          <FormModal table="event" type="delete" id={item.id} />
+        )}
+      </div>
+    </td>
+  </tr>
+);
+
+export default async function EventListPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const { page = 1, ...queryParams } = searchParams;
+  const pageNum = +page;
+
+  const queryDb: Prisma.EventWhereInput = {};
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (!value) continue;
+    switch (key) {
+      case "search": {
+        queryDb.title = { contains: value, mode: "insensitive" };
+        break;
+      }
+    }
+  }
+
+  const [eventsData, length] = await prisma.$transaction([
+    prisma.event.findMany({
+      where: queryDb,
+      include: {
+        class: { select: { name: true } },
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (pageNum - 1),
+    }),
+    prisma.event.count({ where: queryDb }),
+  ]);
 
   return (
     <div className="flex-1 rounded-md bg-white mt-0 m-4 p-4">
@@ -98,7 +138,7 @@ export default function EventListPage() {
       {/* List */}
       <Table columns={columns} renderRow={renderRow} data={eventsData} />
       {/* Pagination */}
-      <Pagination />
+      <Pagination page={pageNum} count={length} />
     </div>
   );
 }

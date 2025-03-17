@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import React from "react";
 
@@ -7,7 +8,11 @@ export default function Navbar() {
       {/* Search */}
       <div className="hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2">
         <Image src="/search.png" alt="search" width={14} height={14} />
-        <input type="text" placeholder="Search..." className="w-[200px] p-2 bg-transparent outline-none"/>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-[200px] p-2 bg-transparent outline-none"
+        />
       </div>
       {/* Icons & User */}
       <div className="flex items-center gap-6 w-full justify-end">
@@ -29,6 +34,8 @@ export default function Navbar() {
           <span className="text-xs leading-3 font-medium">Dang Pham</span>
           <span className="text-[10px] text-gray-500 text-right">Admin</span>
         </div>
+
+        <UserButton />
       </div>
     </div>
   );

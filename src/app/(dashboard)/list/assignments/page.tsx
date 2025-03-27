@@ -2,12 +2,11 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { getUserRole } from "@/lib/helpers";
+import { getUserId, getUserRole } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 type AssignmentList = Assignment & {
@@ -18,37 +17,41 @@ type AssignmentList = Assignment & {
   };
 };
 
-const columns = [
-  {
-    header: "Subject Name",
-    accessor: "name",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Due Date",
-    accessor: "dueDate",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
-];
-
 export default async function AssignmentListPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
   const role = await getUserRole();
+
+  const columns = [
+    {
+      header: "Subject Name",
+      accessor: "name",
+    },
+    {
+      header: "Class",
+      accessor: "class",
+    },
+    {
+      header: "Teacher",
+      accessor: "teacher",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Due Date",
+      accessor: "dueDate",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin" || role === "teacher"
+      ? [
+          {
+            header: "Actions",
+            accessor: "actions",
+          },
+        ]
+      : []),
+  ];
 
   const renderRow = (item: AssignmentList) => (
     <tr
@@ -69,13 +72,11 @@ export default async function AssignmentListPage({
       </td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="flex items-center justify-center rounded-full bg-stSky w-7 h-7">
-              <Image src="/view.png" alt="view" width={16} height={16} />
-            </button>
-          </Link>
-          {role === "admin" && (
-            <FormModal table="assignment" type="delete" id={item.id} />
+          {(role === "admin" || role === "teacher") && (
+            <>
+              <FormModal table="assignment" type="update" data={item} />
+              <FormModal table="assignment" type="delete" id={item.id} />
+            </>
           )}
         </div>
       </td>
@@ -86,7 +87,7 @@ export default async function AssignmentListPage({
   const pageNum = +page;
   const queryDb: Prisma.AssignmentWhereInput = {};
   queryDb.lesson = {};
-
+  // URL params condition
   for (const [key, value] of Object.entries(queryParams)) {
     if (!value) continue;
     switch (key) {
@@ -108,6 +109,32 @@ export default async function AssignmentListPage({
         break;
       }
     }
+  }
+
+  const currentUserId = await getUserId();
+  // role condition
+  switch (role) {
+    case "admin":
+      break;
+    case "teacher":
+      queryDb.lesson.teacherId = currentUserId;
+      break;
+    case "student":
+      {
+        queryDb.lesson.class = {
+          students: { some: { id: currentUserId } },
+        };
+      }
+      break;
+    case "parent":
+      {
+        queryDb.lesson.class = {
+          students: { some: { parentId: currentUserId } },
+        };
+      }
+      break;
+    default:
+      break;
   }
 
   const [assignmentsData, length] = await prisma.$transaction([

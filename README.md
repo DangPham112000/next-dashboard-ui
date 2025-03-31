@@ -47,3 +47,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result
+
+## Prisma
+
+### Sync database schema with schema.prisma
+
+- Pushes your Prisma schema changes directly to the database. It synchronizes your database schema with your Prisma schema
+- Note: It will clear your data in db
+
+```sh
+npx prisma db push --force-reset
+```

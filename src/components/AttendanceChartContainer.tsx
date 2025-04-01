@@ -10,7 +10,8 @@ export default async function AttendanceChartContainer() {
 
   const lastMonday = new Date(today);
 
-  lastMonday.setDate(today.getDate() - daysSinceMonday - 1);
+  lastMonday.setDate(today.getDate() - daysSinceMonday);
+  lastMonday.setHours(0, 0, 0, 0);
 
   const resData = await prisma.attendance.findMany({
     where: {

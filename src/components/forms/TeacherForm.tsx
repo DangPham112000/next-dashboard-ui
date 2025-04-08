@@ -37,10 +37,14 @@ const schema = z.object({
 
 export default function TeacherForm({
   type,
+  setIsOpen,
   data,
+  relatedData,
 }: {
   type: "create" | "update";
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   data?: any;
+  relatedData?: any;
 }) {
   const {
     register,

@@ -9,6 +9,7 @@ type InputFieldProps = {
   defaultValue?: string;
   error?: FieldError;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  hidden?: boolean;
 };
 
 export default function InputField({
@@ -18,10 +19,13 @@ export default function InputField({
   name,
   defaultValue,
   error,
-  inputProps
+  inputProps,
+  hidden,
 }: InputFieldProps) {
   return (
-    <div className="flex flex-col md:w-1/4 w-full gap-2">
+    <div
+      className={`${hidden ? "hidden" : "flex"} flex-col md:w-1/4 w-full gap-2`}
+    >
       <label className="text-xs text-gray-500">{label}</label>
       <input
         className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"

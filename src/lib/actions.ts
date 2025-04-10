@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { SubjectSchema } from "./formValidationSchema";
+import { ClassSchema, SubjectSchema } from "./formValidationSchema";
 import { prisma } from "./prisma";
 
 type CurrentState = {
@@ -66,6 +66,58 @@ export const deleteSubject = async (
     });
 
     // revalidatePath("/list/subjects");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const createClass = async (
+  currentState: CurrentState,
+  data: ClassSchema
+) => {
+  try {
+    await prisma.class.create({ data });
+
+    // revalidatePath("/list/classes");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const updateClass = async (
+  currentState: CurrentState,
+  data: ClassSchema
+) => {
+  try {
+    await prisma.class.update({
+      where: { id: data.id },
+      data,
+    });
+
+    // revalidatePath("/list/classes");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const deleteClass = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  try {
+    const id = data.get("id") as string;
+
+    await prisma.class.delete({
+      where: { id: parseInt(id) },
+    });
+
+    // revalidatePath("/list/classes");
     return { success: true, error: false };
   } catch (error) {
     console.error(error);

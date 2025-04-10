@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import InputField from "../InputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubjectSchema, subjectSchema } from "@/lib/formValidationSchema";
-import { createSubject, updateSubject } from "@/lib/actions";
+import { classSchema, ClassSchema } from "@/lib/formValidationSchema";
 import { useFormState } from "react-dom";
-import { toast } from "react-toastify";
+import { createClass, updateClass } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-export default function SubjectForm({
+export default function ClassForm({
   type,
-  setIsOpenModal,
   data,
+  setIsOpenModal,
   relatedData,
 }: {
   type: "create" | "update";
@@ -20,28 +20,26 @@ export default function SubjectForm({
   relatedData?: any;
 }) {
   const isCreateForm = type === "create";
-  const formTitle = isCreateForm
-    ? "Create a new subject"
-    : "Update the subject";
+  const formTitle = isCreateForm ? "Create a new class" : "Update the class";
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SubjectSchema>({
-    resolver: zodResolver(subjectSchema),
+  } = useForm<ClassSchema>({
+    resolver: zodResolver(classSchema),
   });
 
   // React 19: useFormState => useActionState
   const [formState, formAction] = useFormState(
-    isCreateForm ? createSubject : updateSubject,
+    isCreateForm ? createClass : updateClass,
     {
       success: false,
       error: false,
     }
   );
 
-  const onSubmit = handleSubmit((data: SubjectSchema) => {
+  const onSubmit = handleSubmit((data: ClassSchema) => {
     console.log(data);
     formAction(data);
   });
@@ -50,13 +48,13 @@ export default function SubjectForm({
 
   useEffect(() => {
     if (formState.success) {
-      toast(`Subject has been ${isCreateForm ? "created" : "updated"}!`);
+      toast(`Class has been ${isCreateForm ? "created" : "updated"}!`);
       setIsOpenModal(false);
       router.refresh();
     }
   }, [formState]);
 
-  const { teachers } = relatedData;
+  const { teachers, lessons, students, grades } = relatedData;
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -64,11 +62,18 @@ export default function SubjectForm({
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Subject name"
+          label="Class name"
           name="name"
           defaultValue={data?.name}
           register={register}
           error={errors?.name}
+        />
+        <InputField
+          label="Capacity"
+          name="capacity"
+          defaultValue={data?.capacity}
+          register={register}
+          error={errors?.capacity}
         />
         {data && (
           <InputField
@@ -81,23 +86,50 @@ export default function SubjectForm({
           />
         )}
         <div className="flex flex-col md:w-1/4 w-full gap-2">
-          <label className="text-xs text-gray-500">Teachers</label>
+          <label className="text-xs text-gray-500">Supervisor</label>
           <select
-            multiple
             className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
-            {...register("teachers")}
+            {...register("supervisorId")}
             defaultValue={data?.teachers}
           >
             {teachers.map(
               (teacher: { id: string; name: string; surname: string }) => (
-                <option value={teacher.id} key={teacher.id}>
+                <option
+                  value={teacher.id}
+                  key={teacher.id}
+                  selected={!!(data && data.supervisorId === teacher.id)}
+                >
                   {teacher.name + " " + teacher.surname}
                 </option>
               )
             )}
           </select>
-          {errors.teachers?.message && (
-            <p className="text-xs text-red-400">{errors.teachers?.message}</p>
+          {errors.supervisorId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.supervisorId?.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col md:w-1/4 w-full gap-2">
+          <label className="text-xs text-gray-500">Grade</label>
+          <select
+            className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
+            {...register("gradeId")}
+            defaultValue={data?.grades}
+          >
+            {grades.map((grade: { id: number; level: number }) => (
+              <option
+                value={grade.id}
+                key={grade.id}
+                selected={!!(data && data.gradeId === grade.id)}
+              >
+                {grade.level}
+              </option>
+            ))}
+          </select>
+          {errors.gradeId?.message && (
+            <p className="text-xs text-red-400">{errors.gradeId?.message}</p>
           )}
         </div>
       </div>

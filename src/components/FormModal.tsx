@@ -1,5 +1,5 @@
 "use client";
-import { deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteSubject } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { FormContainerProps } from "./FormContainer";
 
 const deleteActionMap = {
   subject: deleteSubject,
-  class: deleteSubject,
+  class: deleteClass,
   teacher: deleteSubject,
   parent: deleteSubject,
   student: deleteSubject,
@@ -33,6 +33,9 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const forms: {
   [key: string]: (
@@ -42,14 +45,27 @@ const forms: {
     relatedData?: any
   ) => JSX.Element;
 } = {
-  teacher: (type, data, setIsOpen, relatedData) => (
-    <TeacherForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
+  // teacher: (type, data, setIsOpen, relatedData) => (
+  //   <TeacherForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
+  // ),
+  // student: (type, data, setIsOpen, relatedData) => (
+  //   <StudentForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
+  // ),
+  subject: (type, data, setIsOpenModal, relatedData) => (
+    <SubjectForm
+      type={type}
+      data={data}
+      setIsOpenModal={setIsOpenModal}
+      relatedData={relatedData}
+    />
   ),
-  student: (type, data, setIsOpen, relatedData) => (
-    <StudentForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
-  ),
-  subject: (type, data, setIsOpen, relatedData) => (
-    <SubjectForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
+  class: (type, data, setIsOpenModal, relatedData) => (
+    <ClassForm
+      type={type}
+      data={data}
+      setIsOpenModal={setIsOpenModal}
+      relatedData={relatedData}
+    />
   ),
 };
 

@@ -1,8 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ClassSchema, SubjectSchema } from "./formValidationSchema";
+import {
+  ClassSchema,
+  SubjectSchema,
+  TeacherSchema,
+} from "./formValidationSchema";
 import { prisma } from "./prisma";
+import { randomUUID } from "crypto";
+import { clerkClient } from "@clerk/nextjs/server";
 
 type CurrentState = {
   success: boolean;
@@ -118,6 +124,109 @@ export const deleteClass = async (
     });
 
     // revalidatePath("/list/classes");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const createTeacher = async (
+  currentState: CurrentState,
+  data: TeacherSchema
+) => {
+  try {
+    const clerk = await clerkClient();
+    const user = await clerk.users.createUser({
+      username: data.username,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      publicMetadata: {
+        role: "teacher",
+      },
+    });
+
+    await prisma.teacher.create({
+      data: {
+        id: user.id,
+        username: data.username,
+        name: data.firstName,
+        surname: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        img: data.img,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: new Date(data.birthday),
+        subjects: {
+          connect: data.subjects.map((subjectId) => ({ id: subjectId })),
+        },
+        classes: {
+          connect: data.classes.map((classId) => ({ id: classId })),
+        },
+      },
+    });
+
+    // revalidatePath("/list/teachers");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const updateTeacher = async (
+  currentState: CurrentState,
+  data: TeacherSchema
+) => {
+  try {
+    await prisma.teacher.update({
+      where: { id: data.id },
+      data: {
+        username: data.username,
+        name: data.firstName,
+        surname: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        img: data.img,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: new Date(data.birthday),
+        subjects: {
+          set: data.subjects.map((subjectId) => ({ id: subjectId })),
+        },
+        classes: {
+          set: data.classes.map((classId) => ({ id: classId })),
+        },
+      },
+    });
+
+    // revalidatePath("/list/teachers");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+};
+
+export const deleteTeacher = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  try {
+    const id = data.get("id") as string;
+
+    const clerk = await clerkClient();
+    await clerk.users.deleteUser(id);
+
+    await prisma.teacher.delete({
+      where: { id },
+    });
+
+    // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (error) {
     console.error(error);

@@ -6,7 +6,7 @@ type InputFieldProps = {
   type?: string;
   register: any;
   name: string;
-  defaultValue?: string;
+  defaultValue?: string | Date;
   error?: FieldError;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   hidden?: boolean;

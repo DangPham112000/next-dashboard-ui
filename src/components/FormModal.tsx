@@ -1,5 +1,5 @@
 "use client";
-import { deleteClass, deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteSubject, deleteTeacher } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import { FormContainerProps } from "./FormContainer";
 const deleteActionMap = {
   subject: deleteSubject,
   class: deleteClass,
-  teacher: deleteSubject,
+  teacher: deleteTeacher,
   parent: deleteSubject,
   student: deleteSubject,
   lesson: deleteSubject,
@@ -45,9 +45,14 @@ const forms: {
     relatedData?: any
   ) => JSX.Element;
 } = {
-  // teacher: (type, data, setIsOpen, relatedData) => (
-  //   <TeacherForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
-  // ),
+  teacher: (type, data, setIsOpenModal, relatedData) => (
+    <TeacherForm
+      type={type}
+      data={data}
+      setIsOpenModal={setIsOpenModal}
+      relatedData={relatedData}
+    />
+  ),
   // student: (type, data, setIsOpen, relatedData) => (
   //   <StudentForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
   // ),
@@ -104,7 +109,7 @@ export default function FormModal({
 
     return type === "delete" && id ? (
       <form action={formAction} className="flex flex-col gap-4 p-4">
-        <input type="text | number" name="id" value={id} hidden />
+        <input type="text | number" name="id" defaultValue={id} hidden />
         <span className="font-medium text-center">
           All data will be lost. Are you sure to delete this {table}?
         </span>

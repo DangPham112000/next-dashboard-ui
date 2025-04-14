@@ -2,12 +2,13 @@ import Announcement from "@/components/Announcement";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
 import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
+import StudentAttendanceCard from "@/components/StudentAttendanceCard";
 import { getUserRole } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
 type Params = Promise<{ id: string }>;
 
@@ -94,10 +95,9 @@ export default async function SingleStudentPage(props: { params: Params }) {
                 height={24}
                 className="w-6 h-6"
               />
-              <div className="">
-                <h1 className="text-xl font-semibold">90%</h1>
-                <div className="text-sm text-gray-400">Attendance</div>
-              </div>
+              <Suspense fallback="loading...">
+                <StudentAttendanceCard id={student.id} />
+              </Suspense>
             </div>
             {/* Card */}
             <div className="flex 2xl:w-[48%] xl:w-[45%] md:w-[48%] w-full gap-4 p-4 rounded-md bg-white">

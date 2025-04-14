@@ -61,7 +61,7 @@ export default function StudentForm({
 
   useEffect(() => {
     if (formState.success) {
-      toast(`Teacher has been ${isCreateForm ? "created" : "updated"}!`);
+      toast(`Student has been ${isCreateForm ? "created" : "updated"}!`);
       setIsOpenModal(false);
       router.refresh();
     }

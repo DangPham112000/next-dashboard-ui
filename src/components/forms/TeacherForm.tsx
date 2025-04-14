@@ -203,7 +203,7 @@ export default function TeacherForm({
             multiple
             className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
             {...register("subjects")}
-            defaultValue={data && data.subjects.map((sub: any) => sub.id)}
+            defaultValue={data && data.subjects?.map((sub: any) => sub.id)}
           >
             {subjects.map((subject: { id: number; name: string }) => (
               <option value={subject.id} key={subject.id}>
@@ -221,7 +221,7 @@ export default function TeacherForm({
             multiple
             className="w-full ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
             {...register("classes")}
-            defaultValue={data && data.classes.map((cls: any) => cls.id)}
+            defaultValue={data && data.classes?.map((cls: any) => cls.id)}
           >
             {classes.map((cla: { id: number; name: string }) => (
               <option value={cla.id} key={cla.id}>

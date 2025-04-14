@@ -61,7 +61,8 @@ export default async function ClassListPage({
       <td className="md:table-cell hidden">{item.capacity}</td>
       <td className="md:table-cell hidden">{item.grade.level}</td>
       <td className="md:table-cell hidden">
-        {item.supervisor.name + " " + item.supervisor.surname}
+        {item.supervisor?.name &&
+          item.supervisor?.name + " " + item.supervisor?.surname}
       </td>
       {role === "admin" && (
         <td>
@@ -90,6 +91,9 @@ export default async function ClassListPage({
       case "supervisorId": {
         queryDb.supervisorId = value;
         break;
+      }
+      case "teacherId": {
+        queryDb.lessons = { some: { teacherId: value } };
       }
     }
   }

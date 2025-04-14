@@ -7,7 +7,6 @@ import {
   TeacherSchema,
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { randomUUID } from "crypto";
 import { clerkClient } from "@clerk/nextjs/server";
 
 type CurrentState = {
@@ -181,6 +180,22 @@ export const updateTeacher = async (
   currentState: CurrentState,
   data: TeacherSchema
 ) => {
+  if (!data.id) {
+    return { success: false, error: true };
+  }
+
+  try {
+    const clerk = await clerkClient();
+    await clerk.users.updateUser(data.id, {
+      username: data.username,
+      ...(data.password && { password: data.password }),
+      firstName: data.firstName,
+      lastName: data.lastName,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
   try {
     await prisma.teacher.update({
       where: { id: data.id },

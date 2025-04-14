@@ -4,7 +4,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { getUserRole } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/setting";
+import { ITEM_PER_PAGE, SearchParams } from "@/lib/setting";
 import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,11 +12,10 @@ import React from "react";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
-export default async function TeacherListPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
+export default async function TeacherListPage(props: {
+  searchParams: SearchParams;
 }) {
+  const searchParams = await props.searchParams;
   const role = await getUserRole();
 
   const columns = [

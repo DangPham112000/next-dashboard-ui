@@ -21,3 +21,5 @@ export const routeAccessMap: RouteAccessMapType = {
   "/list/events": ["admin", "teacher", "student", "parent"],
   "/list/announcements": ["admin", "teacher", "student", "parent"],
 };
+
+export type SearchParams = Promise<{ [key: string]: string | undefined }>;

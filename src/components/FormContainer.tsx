@@ -31,13 +31,14 @@ export default async function FormContainer({
 
   if (type !== "delete") {
     switch (table) {
-      case "subject":
+      case "subject": {
         const subjectTeachers = await prisma.teacher.findMany({
           select: { id: true, name: true, surname: true },
         });
         relatedData = { teachers: subjectTeachers };
         break;
-      case "class":
+      }
+      case "class": {
         const teachers = await prisma.teacher.findMany({
           select: { id: true, name: true, surname: true },
         });
@@ -46,7 +47,8 @@ export default async function FormContainer({
         });
         relatedData = { teachers, grades };
         break;
-      case "teacher":
+      }
+      case "teacher": {
         const subjects = await prisma.subject.findMany({
           select: { id: true, name: true },
         });
@@ -55,6 +57,25 @@ export default async function FormContainer({
         });
         relatedData = { subjects, classes };
         break;
+      }
+      case "student": {
+        const classes = await prisma.class.findMany({
+          select: {
+            id: true,
+            name: true,
+            grade: { select: { id: true, level: true } },
+          },
+        });
+        const parents = await prisma.parent.findMany({
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+          },
+        });
+        relatedData = { classes, parents };
+        break;
+      }
     }
   }
 

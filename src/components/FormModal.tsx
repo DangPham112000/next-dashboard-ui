@@ -53,9 +53,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
-  // student: (type, data, setIsOpen, relatedData) => (
-  //   <StudentForm type={type} data={data} setIsOpen={setIsOpen} relatedData={relatedData} />
-  // ),
+  student: (type, data, setIsOpenModal, relatedData) => (
+    <StudentForm
+      type={type}
+      data={data}
+      setIsOpenModal={setIsOpenModal}
+      relatedData={relatedData}
+    />
+  ),
   subject: (type, data, setIsOpenModal, relatedData) => (
     <SubjectForm
       type={type}

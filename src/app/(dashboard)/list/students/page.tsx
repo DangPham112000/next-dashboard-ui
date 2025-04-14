@@ -1,10 +1,10 @@
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { getUserRole } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/setting";
+import { ITEM_PER_PAGE, SearchParams } from "@/lib/setting";
 import { Class, Grade, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,11 +12,10 @@ import React from "react";
 
 type StudentList = Student & { class: Class } & { grade: Grade };
 
-export default async function StudentListPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
+export default async function StudentListPage(props: {
+  searchParams: SearchParams;
 }) {
+  const searchParams = await props.searchParams;
   const role = await getUserRole();
 
   const columns = [
@@ -85,8 +84,8 @@ export default async function StudentListPage({
           </Link>
           {role === "admin" && (
             <>
-              <FormModal table="student" type="update" data={item} />
-              <FormModal table="student" type="delete" id={item.id} />
+              <FormContainer table="student" type="update" data={item} />
+              <FormContainer table="student" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -148,7 +147,7 @@ export default async function StudentListPage({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-stYellow">
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
-            {role === "admin" && <FormModal table="student" type="create" />}
+            {role === "admin" && <FormContainer table="student" type="create" />}
           </div>
         </div>
       </div>

@@ -95,6 +95,14 @@ export default async function AssignmentListPage({
         queryDb.lesson.teacherId = value;
         break;
       }
+      case "studentId": {
+        const student = await prisma.student.findUnique({
+          where: { id: value },
+          select: { classId: true },
+        });
+        queryDb.lesson.classId = student?.classId;
+        break;
+      }
       case "classId": {
         queryDb.lesson.classId = parseInt(value);
         break;

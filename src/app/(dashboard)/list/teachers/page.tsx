@@ -118,6 +118,18 @@ export default async function TeacherListPage(props: {
         };
         break;
       }
+      case "studentId": {
+        const student = await prisma.student.findUnique({
+          where: { id: value },
+          select: { classId: true },
+        });
+        queryDb.lessons = {
+          some: {
+            classId: student?.classId,
+          },
+        };
+        break;
+      }
       case "search": {
         queryDb.name = {
           contains: value,

@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Class, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 type LessonList = Lesson & { subject: Subject } & { class: Class } & {
@@ -85,6 +84,14 @@ export default async function LessonListPage({
       }
       case "classId": {
         queryDb.classId = parseInt(value);
+        break;
+      }
+      case "studentId": {
+        const student = await prisma.student.findUnique({
+          where: { id: value },
+          select: { classId: true },
+        });
+        queryDb.classId = student?.classId;
         break;
       }
       case "search": {

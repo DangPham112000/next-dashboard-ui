@@ -78,6 +78,11 @@ export default async function StudentListPage({
       <td className="lg:table-cell hidden">{item.address}</td>
       <td>
         <div className="flex items-center gap-2">
+          <Link href={`/list/students/${item.id}`}>
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-stSky">
+              <Image src="/view.png" alt="" width={16} height={16} />
+            </button>
+          </Link>
           {role === "admin" && (
             <>
               <FormModal table="student" type="update" data={item} />

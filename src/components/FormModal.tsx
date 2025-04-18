@@ -128,7 +128,7 @@ export default function FormModal({
         setIsOpen(false);
         router.refresh();
       }
-    }, [state]);
+    }, [state, router]);
 
     return type === "delete" && id ? (
       <form action={formAction} className="flex flex-col gap-4 p-4">

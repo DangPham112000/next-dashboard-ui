@@ -65,7 +65,7 @@ export default function StudentForm({
       setIsOpenModal(false);
       router.refresh();
     }
-  }, [formState]);
+  }, [formState, isCreateForm, router, setIsOpenModal]);
 
   const { classes, parents } = relatedData;
 

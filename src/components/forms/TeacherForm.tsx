@@ -64,7 +64,7 @@ export default function TeacherForm({
       setIsOpenModal(false);
       router.refresh();
     }
-  }, [formState]);
+  }, [formState, isCreateForm, router, setIsOpenModal]);
 
   const { subjects, classes } = relatedData;
 

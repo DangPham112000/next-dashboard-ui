@@ -52,7 +52,7 @@ export default function ExamForm({
       setIsOpenModal(false);
       router.refresh();
     }
-  }, [formState]);
+  }, [formState, isCreateForm, router, setIsOpenModal]);
 
   const { lessons } = relatedData;
 

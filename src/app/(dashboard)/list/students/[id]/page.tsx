@@ -145,7 +145,7 @@ export default async function SingleStudentPage(props: { params: Params }) {
         </div>
         {/* Bottom */}
         <div className="h-[800px] p-4 mt-4 rounded-md bg-white">
-          <h1>Student's Schedule</h1>
+          <h1>Student&apos;s Schedule</h1>
           <BigCalendarContainer type="classId" id={student.classId} />
         </div>
       </div>
@@ -158,31 +158,31 @@ export default async function SingleStudentPage(props: { params: Params }) {
               className="p-3 rounded-md bg-stSkyLight"
               href={`/list/lessons?studentId=${studentId}`}
             >
-              Student's Lessons
+              Student&apos;s Lessons
             </Link>
             <Link
               className="p-3 rounded-md bg-stPurpleLight"
               href={`/list/teachers?studentId=${studentId}`}
             >
-              Student's Teachers
+              Student&apos;s Teachers
             </Link>
             <Link
               className="p-3 rounded-md bg-stYellowLight"
               href={`/list/exams?studentId=${studentId}`}
             >
-              Student's Exams
+              Student&apos;s Exams
             </Link>
             <Link
               className="p-3 rounded-md bg-pink-50"
               href={`/list/assignments?studentId=${studentId}`}
             >
-              Student's Assignments
+              Student&apos;s Assignments
             </Link>
             <Link
               className="p-3 rounded-md bg-stSkyLight"
               href={`/list/results?studentId=${studentId}`}
             >
-              Student's Results
+              Student&apos;s Results
             </Link>
           </div>
         </div>

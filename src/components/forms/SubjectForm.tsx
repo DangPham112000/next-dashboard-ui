@@ -54,7 +54,7 @@ export default function SubjectForm({
       setIsOpenModal(false);
       router.refresh();
     }
-  }, [formState]);
+  }, [formState, isCreateForm, router, setIsOpenModal]);
 
   const { teachers } = relatedData;
 

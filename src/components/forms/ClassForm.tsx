@@ -52,7 +52,7 @@ export default function ClassForm({
       setIsOpenModal(false);
       router.refresh();
     }
-  }, [formState]);
+  }, [formState, isCreateForm, router, setIsOpenModal]);
 
   const { teachers, grades } = relatedData;
 

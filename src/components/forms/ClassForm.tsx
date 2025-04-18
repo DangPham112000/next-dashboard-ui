@@ -54,7 +54,7 @@ export default function ClassForm({
     }
   }, [formState]);
 
-  const { teachers, lessons, students, grades } = relatedData;
+  const { teachers, grades } = relatedData;
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
